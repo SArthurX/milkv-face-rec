@@ -189,12 +189,9 @@ make -j4
 
 ## License
 
-[Add your license information here]
+This project follows the license terms in the [LICENSE](LICENSE) file.
 
 ## Contributing
 
-[Add contribution guidelines here]
+Issues and Pull Requests are welcome to improve this project!
 
-## Contact
-
-[Add contact information here]
