@@ -5,7 +5,7 @@ mkdir -p lib/dlib/build
 
 cd lib/dlib/build && cmake .. \
   -DCMAKE_TOOLCHAIN_FILE=../../../riscv-toolchain.cmake \
-  -DCMAKE_INSTALL_PREFIX=/home/sx/milkv/detemb/lib/dlib/dlib_risc \
+  -DCMAKE_INSTALL_PREFIX=/home/sx/milkv/detemb/lib/dlib/build/dlib_risc \
   -DDLIB_NO_GUI_SUPPORT=ON \
   -DDLIB_JPEG_SUPPORT=ON \
   -DDLIB_PNG_SUPPORT=ON \
