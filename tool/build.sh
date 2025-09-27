@@ -1,0 +1,1 @@
+rm -rf build && mkdir -p build && cd build && cmake .. -DCMAKE_TOOLCHAIN_FILE=../riscv-toolchain.cmake && make -j4
