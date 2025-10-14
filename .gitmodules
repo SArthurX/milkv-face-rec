@@ -1,3 +1,12 @@
 [submodule "lib/dlib"]
 	path = lib/dlib
 	url = https://github.com/davisking/dlib.git
+[submodule "lib/ncnn"]
+	path = lib/ncnn
+	url = https://github.com/Tencent/ncnn.git
+[submodule "tools/toolchain"]
+	path = tools/toolchain
+	url = https://github.com/milkv-duo/host-tools.git
+[submodule "lib/opencv"]
+	path = lib/opencv
+	url = https://github.com/opencv/opencv.git
