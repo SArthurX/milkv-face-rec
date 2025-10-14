@@ -18,7 +18,6 @@
     },
     "paths": {
         "images": "./images",
-        "test_images": "./test",
         "results": "./results",
         "features": "./features",
         "database": "./database"
@@ -28,8 +27,8 @@
         "detection_confidence": 0.8
     },
     "settings": {
-        "create_directories": true,
-        "save_detected_faces": true,
-        "save_detection_boxes": true
+        "create_directories": false,
+        "save_detected_faces": false,
+        "save_detection_boxes": false
     }
 }

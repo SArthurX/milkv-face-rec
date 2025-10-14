@@ -43,6 +43,7 @@ bool Config::loadConfig(const std::string& config_file) {
         images_path = j["paths"]["images"];
         test_images_path = j["paths"]["test_images"];
         results_path = j["paths"]["results"];
+        features_path = j["paths"]["features"];
         database_path = j["paths"]["database"];
         
         // 解析閾值
@@ -85,12 +86,12 @@ std::string Config::getImagePath(const std::string& filename) const {
     return joinPath(images_path, filename);
 }
 
-std::string Config::getTestImagePath(const std::string& filename) const {
-    return joinPath(test_images_path, filename);
-}
-
 std::string Config::getResultPath(const std::string& filename) const {
     return joinPath(results_path, filename);
+}
+
+std::string Config::getFeaturePath(const std::string& filename) const {
+    return joinPath(features_path, filename);
 }
 
 
@@ -127,6 +128,7 @@ bool Config::createDirectories() const {
     success &= createDirectory(images_path);
     success &= createDirectory(test_images_path);
     success &= createDirectory(results_path);
+    success &= createDirectory(features_path);
     success &= createDirectory(database_path);
     
     if (!success) {

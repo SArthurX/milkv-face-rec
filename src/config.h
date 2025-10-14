@@ -18,6 +18,7 @@ public:
     std::string images_path;
     std::string test_images_path;
     std::string results_path;     // 辨識後的照片輸出目錄
+    std::string features_path;    // 人臉特徵圖片輸出目錄
     std::string database_path;    // 人臉資料庫檔案目錄
     
     // 閾值設定
@@ -38,8 +39,8 @@ public:
     // 獲取完整路徑的輔助函數
     std::string getModelPath(const std::string& relative_path) const;
     std::string getImagePath(const std::string& filename) const;
-    std::string getTestImagePath(const std::string& filename) const;
     std::string getResultPath(const std::string& filename) const;
+    std::string getFeaturePath(const std::string& filename) const;
     std::string getDatabasePath(const std::string& filename) const;
     
     // 創建目錄

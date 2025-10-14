@@ -112,11 +112,14 @@ int main(int argc, char* argv[])
         if (db.addPerson(name, image_path, feature, results[0].score)) {
             cout << "Successfully registered " << name << " with confidence " << results[0].score << endl;
             
-            // 保存檢測到的人臉
-            cv::Mat face_img = ncnn2cv(face);
-            string face_filename = name + "_face.jpg";
-            cv::imwrite(face_filename, face_img);
-            cout << "Face image saved as: " << face_filename << endl;
+            // 保存檢測到的人臉到 features 目錄
+            if (config.save_detected_faces) {
+                cv::Mat face_img = ncnn2cv(face);
+                string face_filename = name + "_face.jpg";
+                string full_face_path = config.getFeaturePath(face_filename);
+                cv::imwrite(full_face_path, face_img);
+                cout << "Face image saved as: " << full_face_path << endl;
+            }
         } else {
             cerr << "Error: Failed to register " << name << endl;
             return -1;
@@ -180,10 +183,13 @@ int main(int argc, char* argv[])
             }
         }
         
-        // 保存結果圖片
-        string result_filename = "recognition_result.jpg";
-        cv::imwrite(result_filename, result_img);
-        cout << "Recognition result saved as: " << result_filename << endl;
+        // 保存結果圖片到 results 目錄
+        if (config.save_detection_boxes) {
+            string result_filename = "recognition_result.jpg";
+            string full_result_path = config.getResultPath(result_filename);
+            cv::imwrite(full_result_path, result_img);
+            cout << "Recognition result saved as: " << full_result_path << endl;
+        }
         
     } else if (command == "list") {
         auto persons = db.getAllPersons();
