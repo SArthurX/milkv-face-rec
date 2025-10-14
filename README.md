@@ -211,16 +211,17 @@ scp -r models/ images/ root@milkv-ip:/root/face-rec/
 5. Open Pull Request
 
 
+## 📜 License
+
+This project is licensed under the terms in the [LICENSE](LICENSE) file.
+
 ## Acknowledgments
 * [liguiyuan/mobilefacenet-ncnn](https://github.com/liguiyuan/mobilefacenet-ncnn)
+* [nlohmann/json](https://github.com/nlohmann/json)
 
 ## Contributing
 
 Issues and Pull Requests are welcome to improve this project!
-
-## 📜 License
-
-This project is licensed under the terms in the [LICENSE](LICENSE) file.
 
 ---
 
