@@ -9,21 +9,11 @@ Arcface::Arcface(string model_folder)
 {
     Config& config = Config::getInstance();
     
-    // 如果 model_folder 為空，使用配置文件中的路徑
-    if (model_folder.empty()) {
-        string param_file = config.getModelPath(config.arcface_param);
-        string bin_file = config.getModelPath(config.arcface_bin);
-        
-        this->param_file = param_file;
-        this->bin_file = bin_file;
-    } else {
-        // 保持向後兼容性，使用傳入的 model_folder
-        string param_file = model_folder + "/mobilefacenet.param";
-        string bin_file = model_folder + "/mobilefacenet.bin";
-        
-        this->param_file = param_file;
-        this->bin_file = bin_file;
-    }
+    string param_file = config.getModelPath(config.arcface_param);
+    string bin_file = config.getModelPath(config.arcface_bin);
+    
+    this->param_file = param_file;
+    this->bin_file = bin_file;
 
 #if NCNN_VULKAN
     this->net.use_vulkan_compute = true;

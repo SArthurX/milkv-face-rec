@@ -8,35 +8,20 @@ MtcnnDetector::MtcnnDetector(string model_folder)
     vector<string> param_files;
     vector<string> bin_files;
     
-    // 如果 model_folder 為空，使用配置文件中的路徑
-    if (model_folder.empty()) {
-        param_files = {
-            config.getModelPath(config.mtcnn_det1_param),
-            config.getModelPath(config.mtcnn_det2_param),
-            config.getModelPath(config.mtcnn_det3_param),
-            config.getModelPath(config.mtcnn_det4_param)
-        };
-        bin_files = {
-            config.getModelPath(config.mtcnn_det1_bin),
-            config.getModelPath(config.mtcnn_det2_bin),
-            config.getModelPath(config.mtcnn_det3_bin),
-            config.getModelPath(config.mtcnn_det4_bin)
-        };
-    } else {
-        // 保持向後兼容性，使用傳入的 model_folder
-        param_files = {
-            model_folder + "/det1.param", 
-            model_folder + "/det2.param",
-            model_folder + "/det3.param",
-            model_folder + "/det4.param"
-        };
-        bin_files = {
-            model_folder + "/det1.bin",
-            model_folder + "/det2.bin",
-            model_folder + "/det3.bin",
-            model_folder + "/det4.bin"
-        };
-    }
+    param_files = {
+        config.getModelPath(config.mtcnn_det1_param),
+        config.getModelPath(config.mtcnn_det2_param),
+        config.getModelPath(config.mtcnn_det3_param),
+        config.getModelPath(config.mtcnn_det4_param)
+    };
+    bin_files = {
+        config.getModelPath(config.mtcnn_det1_bin),
+        config.getModelPath(config.mtcnn_det2_bin),
+        config.getModelPath(config.mtcnn_det3_bin),
+        config.getModelPath(config.mtcnn_det4_bin)
+    };
+
+
     this->Pnet.load_param(param_files[0].c_str());
     this->Pnet.load_model(bin_files[0].c_str());
     this->Rnet.load_param(param_files[1].c_str());

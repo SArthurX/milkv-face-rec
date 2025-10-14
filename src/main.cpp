@@ -29,13 +29,17 @@ cv::Mat ncnn2cv(ncnn::Mat img)
 void printUsage() {
     cout << "Face Recognition Database Demo" << endl;
     cout << "Usage:" << endl;
-    cout << "  ./main register <name> <image_path>  - Register a new person" << endl;
-    cout << "  ./main recognize <image_path>        - Recognize person in image" << endl;
-    cout << "  ./main list                          - List all registered persons" << endl;
-    cout << "  ./main remove <name>                 - Remove a person from database" << endl;
+    cout << "  ./main [-c config.json] <command> [args...]" << endl;
+    cout << "Commands:" << endl;
+    cout << "  register <name> <image_path>  - Register a new person" << endl;
+    cout << "  recognize <image_path>        - Recognize person in image" << endl;
+    cout << "  list                          - List all registered persons" << endl;
+    cout << "  remove <name>                 - Remove a person from database" << endl;
+    cout << "Options:" << endl;
+    cout << "  -c config.json               - Specify config file (default: config.json)" << endl;
     cout << "Example:" << endl;
     cout << "  ./main register \"John\" \"john.jpg\"" << endl;
-    cout << "  ./main recognize \"unknown.jpg\"" << endl;
+    cout << "  ./main -c production.json recognize \"unknown.jpg\"" << endl;
 }
 
 int main(int argc, char* argv[])
@@ -45,23 +49,39 @@ int main(int argc, char* argv[])
         return -1;
     }
     
-    string command = argv[1];
+    // 解析命令列參數
+    string config_file = "config.json";  // 預設配置檔案
+    int arg_start = 1;  // 命令開始的參數索引
+    
+    // 檢查是否指定了配置檔案
+    if (argc >= 3 && string(argv[1]) == "-c") {
+        if (argc < 4) {
+            printUsage();
+            return -1;
+        }
+        config_file = argv[2];
+        arg_start = 3;  // 命令從第3個參數開始
+    }
+    
+    string command = argv[arg_start];
     
     // 載入配置文件
     Config& config = Config::getInstance();
-    if (!config.loadConfig("config.json")) {
-        std::cerr << "Failed to load config file, using default settings" << std::endl;
+    if (!config.loadConfig(config_file)) {
+        std::cerr << "Failed to load config file: " << config_file << std::endl;
         return -1;
     }
+    
+    std::cout << "Using config file: " << config_file << std::endl;
     
     // 初始化模型
     MtcnnDetector detector("");
     Arcface arc("");
     FaceDatabase db(config.getDatabasePath("face_database.txt"));
     
-    if (command == "register" && argc == 4) {
-        string name = argv[2];
-        string image_path = argv[3];
+    if (command == "register" && argc == arg_start + 3) {
+        string name = argv[arg_start + 1];
+        string image_path = argv[arg_start + 2];
         
         // 讀取圖片
         Mat img = imread(image_path);
@@ -102,8 +122,8 @@ int main(int argc, char* argv[])
             return -1;
         }
         
-    } else if (command == "recognize" && argc == 3) {
-        string image_path = argv[2];
+    } else if (command == "recognize" && argc == arg_start + 2) {
+        string image_path = argv[arg_start + 1];
         
         // 讀取圖片
         Mat img = imread(image_path);
@@ -173,8 +193,8 @@ int main(int argc, char* argv[])
                  << ", confidence: " << person.confidence << ")" << endl;
         }
         
-    } else if (command == "remove" && argc == 3) {
-        string name = argv[2];
+    } else if (command == "remove" && argc == arg_start + 2) {
+        string name = argv[arg_start + 1];
         if (db.removePerson(name)) {
             cout << "Successfully removed " << name << " from database." << endl;
         }

@@ -2,7 +2,6 @@
 #define CONFIG_H
 
 #include <string>
-#include <map>
 #include <iostream>
 
 class Config {
@@ -19,7 +18,6 @@ public:
     std::string images_path;
     std::string test_images_path;
     std::string results_path;     // 辨識後的照片輸出目錄
-    std::string features_path;    // 人臉特徵檔案輸出目錄
     std::string database_path;    // 人臉資料庫檔案目錄
     
     // 閾值設定
@@ -42,7 +40,6 @@ public:
     std::string getImagePath(const std::string& filename) const;
     std::string getTestImagePath(const std::string& filename) const;
     std::string getResultPath(const std::string& filename) const;
-    std::string getFeaturePath(const std::string& filename) const;
     std::string getDatabasePath(const std::string& filename) const;
     
     // 創建目錄
@@ -53,14 +50,6 @@ private:
     ~Config() = default;
     Config(const Config&) = delete;
     Config& operator=(const Config&) = delete;
-    
-    // JSON 解析輔助函數  
-    std::string parseJsonString(const std::string& json, const std::string& key) const;
-    std::string parseJsonNestedString(const std::string& json, const std::string& parent_key, const std::string& child_key) const;
-    double parseJsonDouble(const std::string& json, const std::string& key) const;
-    double parseJsonNestedDouble(const std::string& json, const std::string& parent_key, const std::string& child_key) const;
-    bool parseJsonBool(const std::string& json, const std::string& key) const;
-    bool parseJsonNestedBool(const std::string& json, const std::string& parent_key, const std::string& child_key) const;
     
     // 路徑處理輔助函數
     std::string joinPath(const std::string& base, const std::string& relative) const;
