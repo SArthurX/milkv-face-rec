@@ -6,9 +6,6 @@
 #include "face_database.h"
 #include "config.h"
 
-using namespace cv;
-using namespace std;
-
 cv::Mat ncnn2cv(ncnn::Mat img)
 {
     unsigned char pix[img.h * img.w * 3];
@@ -27,19 +24,19 @@ cv::Mat ncnn2cv(ncnn::Mat img)
 }
 
 void printUsage() {
-    cout << "Face Recognition Database Demo" << endl;
-    cout << "Usage:" << endl;
-    cout << "  ./main [-c config.json] <command> [args...]" << endl;
-    cout << "Commands:" << endl;
-    cout << "  register <name> <image_path>  - Register a new person" << endl;
-    cout << "  recognize <image_path>        - Recognize person in image" << endl;
-    cout << "  list                          - List all registered persons" << endl;
-    cout << "  remove <name>                 - Remove a person from database" << endl;
-    cout << "Options:" << endl;
-    cout << "  -c config.json               - Specify config file (default: config.json)" << endl;
-    cout << "Example:" << endl;
-    cout << "  ./main register \"John\" \"john.jpg\"" << endl;
-    cout << "  ./main -c production.json recognize \"unknown.jpg\"" << endl;
+    std::cout << "Face Recognition Database Demo" << std::endl;
+    std::cout << "Usage:" << std::endl;
+    std::cout << "  ./main [-c config.json] <command> [args...]" << std::endl;
+    std::cout << "Commands:" << std::endl;
+    std::cout << "  register <name> <image_path>  - Register a new person" << std::endl;
+    std::cout << "  recognize <image_path>        - Recognize person in image" << std::endl;
+    std::cout << "  list                          - List all registered persons" << std::endl;
+    std::cout << "  remove <name>                 - Remove a person from database" << std::endl;
+    std::cout << "Options:" << std::endl;
+    std::cout << "  -c config.json               - Specify config file (default: config.json)" << std::endl;
+    std::cout << "Example:" << std::endl;
+    std::cout << "  ./main register \"John\" \"john.jpg\"" << std::endl;
+    std::cout << "  ./main -c production.json recognize \"unknown.jpg\"" << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -50,11 +47,11 @@ int main(int argc, char* argv[])
     }
     
     // 解析命令列參數
-    string config_file = "config.json";  // 預設配置檔案
+    std::string config_file = "config.json";  // 預設配置檔案
     int arg_start = 1;  // 命令開始的參數索引
     
     // 檢查是否指定了配置檔案
-    if (argc >= 3 && string(argv[1]) == "-c") {
+    if (argc >= 3 && std::string(argv[1]) == "-c") {
         if (argc < 4) {
             printUsage();
             return -1;
@@ -62,9 +59,9 @@ int main(int argc, char* argv[])
         config_file = argv[2];
         arg_start = 3;  // 命令從第3個參數開始
     }
-    
-    string command = argv[arg_start];
-    
+
+    std::string command = argv[arg_start];
+
     // 載入配置文件
     Config& config = Config::getInstance();
     if (!config.loadConfig(config_file)) {
@@ -80,13 +77,13 @@ int main(int argc, char* argv[])
     FaceDatabase db(config.getDatabasePath("face_database.txt"));
     
     if (command == "register" && argc == arg_start + 3) {
-        string name = argv[arg_start + 1];
-        string image_path = argv[arg_start + 2];
-        
+        std::string name = argv[arg_start + 1];
+        std::string image_path = argv[arg_start + 2];
+
         // 讀取圖片
-        Mat img = imread(image_path);
+        cv::Mat img = cv::imread(image_path);
         if (img.empty()) {
-            cerr << "Error: Cannot read image " << image_path << endl;
+            std::cerr << "Error: Cannot read image " << image_path << std::endl;
             return -1;
         }
         
@@ -94,44 +91,44 @@ int main(int argc, char* argv[])
         ncnn::Mat ncnn_img = ncnn::Mat::from_pixels(img.data, ncnn::Mat::PIXEL_BGR, img.cols, img.rows);
         
         // 檢測人臉
-        vector<FaceInfo> results = detector.Detect(ncnn_img);
+        std::vector<FaceInfo> results = detector.Detect(ncnn_img);
         if (results.empty()) {
-            cerr << "Error: No face detected in image " << image_path << endl;
+            std::cerr << "Error: No face detected in image " << image_path << std::endl;
             return -1;
         }
-        
-        cout << "Detected " << results.size() << " face(s), using the first one." << endl;
-        
+
+        std::cout << "Detected " << results.size() << " face(s), using the first one." << std::endl;
+
         // 預處理人臉
         ncnn::Mat face = preprocess(ncnn_img, results[0]);
         
         // 提取特徵
-        vector<float> feature = arc.getFeature(face);
+        std::vector<float> feature = arc.getFeature(face);
         
         // 添加到數據庫
         if (db.addPerson(name, image_path, feature, results[0].score)) {
-            cout << "Successfully registered " << name << " with confidence " << results[0].score << endl;
-            
+            std::cout << "Successfully registered " << name << " with confidence " << results[0].score << std::endl;
+
             // 保存檢測到的人臉到 features 目錄
             if (config.save_detected_faces) {
                 cv::Mat face_img = ncnn2cv(face);
-                string face_filename = name + "_face.jpg";
-                string full_face_path = config.getFeaturePath(face_filename);
+                std::string face_filename = name + "_face.jpg";
+                std::string full_face_path = config.getFeaturePath(face_filename);
                 cv::imwrite(full_face_path, face_img);
-                cout << "Face image saved as: " << full_face_path << endl;
+                std::cout << "Face image saved as: " << full_face_path << std::endl;
             }
         } else {
-            cerr << "Error: Failed to register " << name << endl;
+            std::cerr << "Error: Failed to register " << name << std::endl;
             return -1;
         }
         
     } else if (command == "recognize" && argc == arg_start + 2) {
-        string image_path = argv[arg_start + 1];
+        std::string image_path = argv[arg_start + 1];
         
         // 讀取圖片
-        Mat img = imread(image_path);
+        cv::Mat img = cv::imread(image_path);
         if (img.empty()) {
-            cerr << "Error: Cannot read image " << image_path << endl;
+            std::cerr << "Error: Cannot read image " << image_path << std::endl;
             return -1;
         }
         
@@ -139,28 +136,28 @@ int main(int argc, char* argv[])
         ncnn::Mat ncnn_img = ncnn::Mat::from_pixels(img.data, ncnn::Mat::PIXEL_BGR, img.cols, img.rows);
         
         // 檢測人臉
-        vector<FaceInfo> results = detector.Detect(ncnn_img);
+        std::vector<FaceInfo> results = detector.Detect(ncnn_img);
         if (results.empty()) {
-            cerr << "Error: No face detected in image " << image_path << endl;
+            std::cerr << "Error: No face detected in image " << image_path << std::endl;
             return -1;
         }
         
-        cout << "Detected " << results.size() << " face(s):" << endl;
+        std::cout << "Detected " << results.size() << " face(s):" << std::endl;
         
         // 在圖片上標註結果
-        Mat result_img = img.clone();
+        cv::Mat result_img = img.clone();
         
         for (size_t i = 0; i < results.size(); i++) {
             // 預處理人臉
             ncnn::Mat face = preprocess(ncnn_img, results[i]);
             
             // 提取特徵
-            vector<float> feature = arc.getFeature(face);
+            std::vector<float> feature = arc.getFeature(face);
             
             // 在數據庫中搜索
             auto match = db.searchPerson(feature, 0.6);
-            
-            cout << "Face " << (i+1) << ": " << match.first << " (similarity: " << match.second << ")" << endl;
+
+            std::cout << "Face " << (i+1) << ": " << match.first << " (similarity: " << match.second << ")" << std::endl;
             
             // 在圖片上畫框和標籤
             FaceInfo& face_info = results[i];
@@ -170,7 +167,7 @@ int main(int argc, char* argv[])
                          cv::Scalar(0, 255, 0), 2);
             
             // 添加文字標籤
-            string label = match.first + " (" + to_string(match.second).substr(0, 4) + ")";
+            std::string label = match.first + " (" + std::to_string(match.second).substr(0, 4) + ")";
             cv::putText(result_img, label, 
                        cv::Point(face_info.x[0], face_info.y[0] - 10), 
                        cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(0, 255, 0), 2);
@@ -185,24 +182,24 @@ int main(int argc, char* argv[])
         
         // 保存結果圖片到 results 目錄
         if (config.save_detection_boxes) {
-            string result_filename = "recognition_result.jpg";
-            string full_result_path = config.getResultPath(result_filename);
+            std::string result_filename = "recognition_result.jpg";
+            std::string full_result_path = config.getResultPath(result_filename);
             cv::imwrite(full_result_path, result_img);
-            cout << "Recognition result saved as: " << full_result_path << endl;
+            std::cout << "Recognition result saved as: " << full_result_path << std::endl;
         }
         
     } else if (command == "list") {
         auto persons = db.getAllPersons();
-        cout << "Database contains " << persons.size() << " person(s):" << endl;
+        std::cout << "Database contains " << persons.size() << " person(s):" << std::endl;
         for (const auto& person : persons) {
-            cout << "- " << person.name << " (image: " << person.image_path 
-                 << ", confidence: " << person.confidence << ")" << endl;
+            std::cout << "- " << person.name << " (image: " << person.image_path 
+                      << ", confidence: " << person.confidence << ")" << std::endl;
         }
         
     } else if (command == "remove" && argc == arg_start + 2) {
-        string name = argv[arg_start + 1];
+        std::string name = argv[arg_start + 1];
         if (db.removePerson(name)) {
-            cout << "Successfully removed " << name << " from database." << endl;
+            std::cout << "Successfully removed " << name << " from database." << std::endl;
         }
         
     } else {

@@ -9,13 +9,11 @@
 #include "net.h"
 #include "base.h"
 
-using namespace std;
-
 class MtcnnDetector {
 public:
-    MtcnnDetector(string model_folder = "");
+    MtcnnDetector(std::string model_folder = "");
     ~MtcnnDetector();
-    vector<FaceInfo> Detect(ncnn::Mat img);
+    std::vector<FaceInfo> Detect(ncnn::Mat img);
 private:
     float minsize = 20;
     float threshold[3] = {0.6f, 0.7f, 0.8f};
@@ -26,13 +24,13 @@ private:
     ncnn::Net Rnet;
     ncnn::Net Onet;
     ncnn::Net Lnet;
-    vector<FaceInfo> Pnet_Detect(ncnn::Mat img);
-    vector<FaceInfo> Rnet_Detect(ncnn::Mat img, vector<FaceInfo> bboxs);
-    vector<FaceInfo> Onet_Detect(ncnn::Mat img, vector<FaceInfo> bboxs);
-    void Lnet_Detect(ncnn::Mat img, vector<FaceInfo> &bboxs);
-    vector<FaceInfo> generateBbox(ncnn::Mat score, ncnn::Mat loc, float scale, float thresh);
-    void doNms(vector<FaceInfo> &bboxs, float nms_thresh, string mode);
-    void refine(vector<FaceInfo> &bboxs, int height, int width, bool flag = false);
+    std::vector<FaceInfo> Pnet_Detect(ncnn::Mat img);
+    std::vector<FaceInfo> Rnet_Detect(ncnn::Mat img, std::vector<FaceInfo> bboxs);
+    std::vector<FaceInfo> Onet_Detect(ncnn::Mat img, std::vector<FaceInfo> bboxs);
+    void Lnet_Detect(ncnn::Mat img, std::vector<FaceInfo> &bboxs);
+    std::vector<FaceInfo> generateBbox(ncnn::Mat score, ncnn::Mat loc, float scale, float thresh);
+    void doNms(std::vector<FaceInfo> &bboxs, float nms_thresh, std::string mode);
+    void refine(std::vector<FaceInfo> &bboxs, int height, int width, bool flag = false);
 };
 
 #endif

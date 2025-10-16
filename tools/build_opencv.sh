@@ -26,7 +26,7 @@ cmake .. \
     -DBUILD_opencv_core=ON \
     -DBUILD_opencv_imgproc=ON \
     -DBUILD_opencv_imgcodecs=ON \
-    -DBUILD_LIST="core,imgproc,imgcodecs,highgui" \
+    -DBUILD_LIST="core,imgproc,imgcodecs" \
     \
     -DWITH_IPP=OFF \
     -DBUILD_IPP_IW=OFF \

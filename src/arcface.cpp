@@ -5,12 +5,12 @@
 #include "gpu.h"
 #endif // NCNN_VULKAN
 
-Arcface::Arcface(string model_folder)
+Arcface::Arcface(std::string model_folder)
 {
     Config& config = Config::getInstance();
-    
-    string param_file = config.getModelPath(config.arcface_param);
-    string bin_file = config.getModelPath(config.arcface_bin);
+
+    std::string param_file = config.getModelPath(config.arcface_param);
+    std::string bin_file = config.getModelPath(config.arcface_bin);
     
     this->param_file = param_file;
     this->bin_file = bin_file;
@@ -28,9 +28,9 @@ Arcface::~Arcface()
     this->net.clear();
 }
 
-vector<float> Arcface::getFeature(ncnn::Mat img)
+std::vector<float> Arcface::getFeature(ncnn::Mat img)
 {
-    vector<float> feature;
+    std::vector<float> feature;
     ncnn::Mat in = resize(img, 112, 112);
     in = bgr2rgb(in);
     ncnn::Extractor ex = net.create_extractor();
@@ -45,7 +45,7 @@ vector<float> Arcface::getFeature(ncnn::Mat img)
     return feature;
 }
 
-void Arcface::normalize(vector<float> &feature)
+void Arcface::normalize(std::vector<float> &feature)
 {
     float sum = 0;
     for (auto it = feature.begin(); it != feature.end(); it++)

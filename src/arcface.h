@@ -7,7 +7,6 @@
 #include "net.h"
 #include "base.h"
 
-using namespace std;
 
 ncnn::Mat preprocess(ncnn::Mat img, FaceInfo info);
 
@@ -17,18 +16,18 @@ float calcSimilar(std::vector<float> feature1, std::vector<float> feature2);
 class Arcface {
 
 public:
-    Arcface(string model_folder = "");
+    Arcface(std::string model_folder = "");
     ~Arcface();
-    vector<float> getFeature(ncnn::Mat img);
+    std::vector<float> getFeature(ncnn::Mat img);
 
 private:
     ncnn::Net net;
-    string param_file;
-    string bin_file;
+    std::string param_file;
+    std::string bin_file;
 
     const int feature_dim = 128;
 
-    void normalize(vector<float> &feature);
+    void normalize(std::vector<float> &feature);
 };
 
 #endif

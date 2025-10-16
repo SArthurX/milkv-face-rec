@@ -41,7 +41,6 @@ bool Config::loadConfig(const std::string& config_file) {
         
         // 解析路徑設定
         images_path = j["paths"]["images"];
-        test_images_path = j["paths"]["test_images"];
         results_path = j["paths"]["results"];
         features_path = j["paths"]["features"];
         database_path = j["paths"]["database"];

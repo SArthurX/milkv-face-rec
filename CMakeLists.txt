@@ -5,10 +5,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "-O3 -fopenmp -pthread")
 
-set(OpenCV_DIR "${CMAKE_SOURCE_DIR}/lib/opencv/build/opencv4/lib/cmake/opencv4" CACHE PATH "OpenCV config path")
+set(OpenCV_DIR "${CMAKE_SOURCE_DIR}/lib/opencv/build/opencv4_riscv/lib/cmake/opencv4" CACHE PATH "OpenCV config path")
 find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs)
 
-set(ncnn_DIR "${CMAKE_SOURCE_DIR}/lib/ncnn/build/ncnn/lib/cmake/ncnn" CACHE PATH "ncnn cmake config path for RISC-V")
+set(ncnn_DIR "${CMAKE_SOURCE_DIR}/lib/ncnn/build/ncnn_riscv/lib/cmake/ncnn" CACHE PATH "ncnn cmake config path for RISC-V")
 find_package(ncnn REQUIRED)
 
 set(COMMON_SOURCES

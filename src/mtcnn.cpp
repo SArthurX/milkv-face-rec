@@ -1,13 +1,13 @@
 #include "mtcnn.h"
 #include "config.h"
 
-MtcnnDetector::MtcnnDetector(string model_folder)
+MtcnnDetector::MtcnnDetector(std::string model_folder)
 {
     Config& config = Config::getInstance();
     
-    vector<string> param_files;
-    vector<string> bin_files;
-    
+    std::vector<std::string> param_files;
+    std::vector<std::string> bin_files;
+
     param_files = {
         config.getModelPath(config.mtcnn_det1_param),
         config.getModelPath(config.mtcnn_det2_param),
@@ -40,20 +40,20 @@ MtcnnDetector::~MtcnnDetector()
     this->Lnet.clear();
 }
 
-vector<FaceInfo> MtcnnDetector::Detect(ncnn::Mat img)
+std::vector<FaceInfo> MtcnnDetector::Detect(ncnn::Mat img)
 {
     int img_w = img.w;
     int img_h = img.h;
 
-    vector<FaceInfo> pnet_results = Pnet_Detect(img);
+    std::vector<FaceInfo> pnet_results = Pnet_Detect(img);
     doNms(pnet_results, 0.7, "union");
     refine(pnet_results, img_h, img_w, true);
 
-    vector<FaceInfo> rnet_results = Rnet_Detect(img, pnet_results);
+    std::vector<FaceInfo> rnet_results = Rnet_Detect(img, pnet_results);
     doNms(rnet_results, 0.7, "union");
     refine(rnet_results, img_h, img_w, true);
 
-    vector<FaceInfo> onet_results = Onet_Detect(img, rnet_results);
+    std::vector<FaceInfo> onet_results = Onet_Detect(img, rnet_results);
     refine(onet_results, img_h, img_w, false);
     doNms(onet_results, 0.7, "min");
 
@@ -62,15 +62,15 @@ vector<FaceInfo> MtcnnDetector::Detect(ncnn::Mat img)
     return onet_results;
 }
 
-vector<FaceInfo> MtcnnDetector::Pnet_Detect(ncnn::Mat img)
+std::vector<FaceInfo> MtcnnDetector::Pnet_Detect(ncnn::Mat img)
 {
-    vector<FaceInfo> results;
+    std::vector<FaceInfo> results;
     int img_w = img.w;
     int img_h = img.h;
     float minl = img_w < img_h ? img_w : img_h;
     double scale = 12.0 / this->minsize;
     minl *= scale;
-    vector<double> scales;
+    std::vector<double> scales;
     while (minl > 12)
     {
         scales.push_back(scale);
@@ -91,16 +91,16 @@ vector<FaceInfo> MtcnnDetector::Pnet_Detect(ncnn::Mat img)
         ncnn::Mat location;
         ex.extract("prob1", score);
         ex.extract("conv4_2", location);
-        vector<FaceInfo> bboxs = generateBbox(score, location, *it, this->threshold[0]);
+        std::vector<FaceInfo> bboxs = generateBbox(score, location, *it, this->threshold[0]);
         doNms(bboxs, 0.5, "union");
         results.insert(results.end(), bboxs.begin(), bboxs.end());
     }
     return results;
 }
 
-vector<FaceInfo> MtcnnDetector::Rnet_Detect(ncnn::Mat img, vector<FaceInfo> bboxs)
+std::vector<FaceInfo> MtcnnDetector::Rnet_Detect(ncnn::Mat img, std::vector<FaceInfo> bboxs)
 {
-    vector<FaceInfo> results;
+    std::vector<FaceInfo> results;
 
     int img_w = img.w;
     int img_h = img.h;
@@ -130,9 +130,9 @@ vector<FaceInfo> MtcnnDetector::Rnet_Detect(ncnn::Mat img, vector<FaceInfo> bbox
     return results;
 }
 
-vector<FaceInfo> MtcnnDetector::Onet_Detect(ncnn::Mat img, vector<FaceInfo> bboxs)
+std::vector<FaceInfo> MtcnnDetector::Onet_Detect(ncnn::Mat img, std::vector<FaceInfo> bboxs)
 {
-    vector<FaceInfo> results;
+    std::vector<FaceInfo> results;
 
     int img_w = img.w;
     int img_h = img.h;
@@ -168,7 +168,7 @@ vector<FaceInfo> MtcnnDetector::Onet_Detect(ncnn::Mat img, vector<FaceInfo> bbox
     return results;
 }
 
-void MtcnnDetector::Lnet_Detect(ncnn::Mat img, vector<FaceInfo> &bboxes)
+void MtcnnDetector::Lnet_Detect(ncnn::Mat img, std::vector<FaceInfo> &bboxes)
 {
     int img_w = img.w;
     int img_h = img.h;
@@ -231,13 +231,13 @@ void MtcnnDetector::Lnet_Detect(ncnn::Mat img, vector<FaceInfo> &bboxes)
     }
 }
 
-vector<FaceInfo> MtcnnDetector::generateBbox(ncnn::Mat score, ncnn::Mat loc, float scale, float thresh)
+std::vector<FaceInfo> MtcnnDetector::generateBbox(ncnn::Mat score, ncnn::Mat loc, float scale, float thresh)
 {
     int stride = 2;
     int cellsize = 12;
     float *p = score.channel(1);
     float inv_scale = 1.0f / scale;
-    vector<FaceInfo> results;
+    std::vector<FaceInfo> results;
     for (int row = 0; row < score.h; row++)
     {
         for (int col = 0; col < score.w; col++)
@@ -270,12 +270,12 @@ bool cmpScore(FaceInfo x, FaceInfo y)
         return false;
 }
 
-float calcIOU(FaceInfo box1, FaceInfo box2, string mode)
+float calcIOU(FaceInfo box1, FaceInfo box2, std::string mode)
 {
-    int maxX = max(box1.x[0], box2.x[0]);
-    int maxY = max(box1.y[0], box2.y[0]);
-    int minX = min(box1.x[1], box2.x[1]);
-    int minY = min(box1.y[1], box2.y[1]);
+    int maxX = std::max(box1.x[0], box2.x[0]);
+    int maxY = std::max(box1.y[0], box2.y[0]);
+    int minX = std::min(box1.x[1], box2.x[1]);
+    int minY = std::min(box1.y[1], box2.y[1]);
     int width = ((minX - maxX + 1) > 0) ? (minX - maxX + 1) : 0;
     int height = ((minY - maxY + 1) > 0) ? (minY - maxY + 1) : 0;
     int inter = width * height;
@@ -287,7 +287,7 @@ float calcIOU(FaceInfo box1, FaceInfo box2, string mode)
         return 0;
 }
 
-void MtcnnDetector::doNms(vector<FaceInfo> &bboxs, float nms_thresh, string mode)
+void MtcnnDetector::doNms(std::vector<FaceInfo> &bboxs, float nms_thresh, std::string mode)
 {
     if (bboxs.empty())
         return;
@@ -308,7 +308,7 @@ void MtcnnDetector::doNms(vector<FaceInfo> &bboxs, float nms_thresh, string mode
             it++;
 }
 
-void MtcnnDetector::refine(vector<FaceInfo> &bboxs, int height, int width, bool flag)
+void MtcnnDetector::refine(std::vector<FaceInfo> &bboxs, int height, int width, bool flag)
 {
     if (bboxs.empty())
         return;
