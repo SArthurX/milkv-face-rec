@@ -2,6 +2,7 @@
 #define BASE_H
 #include <cmath>
 #include <cstring>
+#include <opencv2/opencv.hpp>
 #include "net.h"
 
 typedef struct FaceInfo {
@@ -18,6 +19,8 @@ ncnn::Mat resize(ncnn::Mat src, int w, int h);
 ncnn::Mat bgr2rgb(ncnn::Mat src);
 
 ncnn::Mat rgb2bgr(ncnn::Mat src);
+
+cv::Mat ncnn2cv(ncnn::Mat img);
 
 void getAffineMatrix(float* src_5pts, const float* dst_5pts, float* M);
 

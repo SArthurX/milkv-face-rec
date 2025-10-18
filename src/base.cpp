@@ -14,6 +14,23 @@ ncnn::Mat resize(ncnn::Mat src, int w, int h)
     return dst;
 }
 
+cv::Mat ncnn2cv(ncnn::Mat img)
+{
+    unsigned char pix[img.h * img.w * 3];
+    img.to_pixels(pix, ncnn::Mat::PIXEL_BGR);
+    cv::Mat cv_img(img.h, img.w, CV_8UC3);
+    for (int i = 0; i < cv_img.rows; i++)
+    {
+        for (int j = 0; j < cv_img.cols; j++)
+        {
+            cv_img.at<cv::Vec3b>(i,j)[0] = pix[3 * (i * cv_img.cols + j)];
+            cv_img.at<cv::Vec3b>(i,j)[1] = pix[3 * (i * cv_img.cols + j) + 1];
+            cv_img.at<cv::Vec3b>(i,j)[2] = pix[3 * (i * cv_img.cols + j) + 2];
+        }
+    }
+    return cv_img;
+}
+
 ncnn::Mat bgr2rgb(ncnn::Mat src)
 {
     int src_w = src.w;
